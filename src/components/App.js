@@ -146,7 +146,7 @@ function App() {
       if (jwt) {
         MestoAuth.getContent(jwt).then((res) => {
           if (res) {
-            const userData = res.user;
+            const userData = res;
             setUserData(userData.email);
             setLoggedIn(true);
             history.push("/");
