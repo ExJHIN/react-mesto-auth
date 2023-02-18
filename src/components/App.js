@@ -76,10 +76,17 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-  })}
+    const isLiked = card.likes.some((user) => user === currentUser._id);
+    if(!isLiked) {
+      api.addLike(card._id).then((res) => {
+        setCards((state) => state.map((c) => c._id === card._id ? res : c));
+      })
+    } else {
+      api.deleteLike(card._id).then((res) => {
+        setCards((state) => state.map((c) => c._id === card._id ? res : c));
+      })
+    }
+  };
 
   function handleUpdateUser({name,about}) {
     api.editProfile(name,about)
@@ -106,6 +113,8 @@ function App() {
     api.deleteCard(card._id)
     .then(() => {setCards((state) => state.filter((с) => с._id !== card._id))})
     .catch((err) => console.log(err))}
+
+
 
   const handleRegister = ({email, password}) => {
     return MestoAuth.register(email, password)
