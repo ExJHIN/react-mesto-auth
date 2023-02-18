@@ -35,6 +35,8 @@ function App() {
   const [userData, setUserData] = useState('');
   const [InfoTooltipText, setInfoTooltipText] = useState('');
   const [cards, setCards] = useState([]);
+  const [btnFormText, setBtnFormText] = useState(`Сохранить`);
+
 
   const history = useHistory();
 
@@ -44,8 +46,10 @@ function App() {
       .then(([userData, card]) => {
         setCurrentUser(userData);
         setCards(card);
+        setCards(card.map(i => i).reverse());
       }).catch((err) => console.log(err))
-    }},[loggedIn]);
+    }
+  },[loggedIn]);
 
   function handleEditAvatarClick () {
     setIsEditAvatarPopupOpen(true)
@@ -66,6 +70,7 @@ function App() {
   function handleCardClick (card) {
     setSelectedCard(card)
   }
+
 
   function closeAllPopups () {
     setIsEditProfilePopupOpen(null);
@@ -110,6 +115,7 @@ function App() {
     .catch((err) => console.log(err))}
 
   function handleCardDelete(card) {
+    setBtnFormText(`Удаление карточки...`);
     api.deleteCard(card._id)
     .then(() => {setCards((state) => state.filter((с) => с._id !== card._id))})
     .catch((err) => console.log(err))}
@@ -158,6 +164,7 @@ function App() {
             const userData = res;
             setUserData(userData.email);
             setLoggedIn(true);
+            setCurrentUser(userData);
             history.push("/");
           }}).catch((err) => {
             console.log(err);
@@ -171,7 +178,7 @@ function App() {
 
   const signOut = () => {
     localStorage.removeItem('jwt');
-    setUserData('');
+    setUserData({});
     setLoggedIn(false);
     history.push('/sign-in');
   };
@@ -225,7 +232,7 @@ function App() {
 
       <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddCard={handleAddPlaceSubmit}/>
 
-      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
+      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} btnText={btnFormText}/>
 
       <PopupWithForm name="delete" title="Вы уверены?">
         <label className="popup__profile-info">
