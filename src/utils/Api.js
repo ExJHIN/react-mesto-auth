@@ -110,7 +110,7 @@ class Api {
 const token = localStorage.getItem('jwt');
 
 export const api = new Api({
-  baseUrl: "https://api.mesto.students.nomoredomains.work/",
+  baseUrl: "https://api.mesto.students.nomoredomains.work",
   headers: {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
