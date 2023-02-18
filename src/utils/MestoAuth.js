@@ -1,4 +1,4 @@
-export const BASE_URL = "https://auth.nomoreparties.co";
+export const BASE_URL = "https://api.mesto.students.nomoredomains.work/";
 
 const checkResponse = (res) => {
   if (res.ok) {
@@ -12,14 +12,15 @@ const checkResponse = (res) => {
 
 
 
-export const getContent = (jwt) => {
+export const getContent = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       'Accept': 'application/json',
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${jwt}`,
+      "Authorization": `Bearer ${token}`,
     },
+    credentials: 'include',
   }).then(checkResponse);
 };
 
@@ -29,6 +30,7 @@ export const authorize = (email, password) => {
     headers: {
       'Accept': 'application/json',
       "Content-Type": "application/json" },
+      credentials: 'include',
     body: JSON.stringify({ email, password }),
   }).then(checkResponse);
 };
@@ -39,6 +41,7 @@ export const register = (email, password) => {
     headers: {
     'Accept': 'application/json',
     "Content-Type": "application/json" },
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
   }).then(checkResponse);
 };

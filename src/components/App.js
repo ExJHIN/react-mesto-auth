@@ -126,9 +126,11 @@ function App() {
 
   const handleLogin = ({email, password}) => {
     return MestoAuth.authorize(email, password).then((res) => {
+      api.updateToken(res['token']);
+      setLoggedIn(true);
       if (res.token) {
-        localStorage.setItem('token', res.token);
-        tokenCheck()
+        localStorage.setItem("jwt", res['token']);
+        tokenCheck();
       }})
       .catch((err) => {
         console.log(err);
@@ -138,26 +140,28 @@ function App() {
       })
     }
 
+
   const tokenCheck = () => {
-    const token = localStorage.getItem('token')
-    if(token) {
-      MestoAuth.getContent(token).then((res) => {
-        setUserData(res.data.email)
-        setLoggedIn(true)
-        history.push('/')
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-    }
-  }
+    const jwt = localStorage.getItem('jwt');
+      if (jwt) {
+        MestoAuth.getContent(jwt).then((res) => {
+          if (res) {
+            const userData = res.user;
+            setUserData(userData.email);
+            setLoggedIn(true);
+            history.push("/");
+          }}).catch((err) => {
+            console.log(err);
+          });
+        }
+    };
 
   useEffect(() => {
     tokenCheck();
   }, []);
 
   const signOut = () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('jwt');
     setUserData('');
     setLoggedIn(false);
     history.push('/sign-in');

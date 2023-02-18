@@ -1,7 +1,8 @@
 class Api {
-  constructor({baseUrl,headers}) {
+  constructor({baseUrl,headers,credentials}) {
     this._headers = headers;
-    this._baseUrl = baseUrl
+    this._baseUrl = baseUrl;
+    this.credentials = credentials;
   }
 
   getInfo() {
@@ -10,14 +11,16 @@ class Api {
 
   getProfile(){
     return fetch(`${this._baseUrl}/users/me`,{
-      headers: this._headers
+      headers: this._headers,
+      credentials: 'include'
     }).then(this.checkHelper)
     .catch(console.log)
   }
 
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`,{
-      headers: this._headers
+      headers: this._headers,
+      credentials: 'include'
     }).then(this.checkHelper)
     .catch(console.log)
   }
@@ -26,6 +29,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`,{
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name,
         about
@@ -38,6 +42,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards`,{
       method: "POST",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name,
         link
@@ -50,6 +55,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}`,{
       method: "DELETE",
       headers: this._headers,
+      credentials: 'include',
     }).then(this.checkHelper)
     .catch(console.log)
   }
@@ -58,6 +64,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`,{
       method: "DELETE",
       headers: this._headers,
+      credentials: 'include'
     }).then(this.checkHelper)
     .catch(console.log)
   }
@@ -66,6 +73,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`,{
       method: "PUT",
       headers: this._headers,
+      credentials: 'include'
     }).then(this.checkHelper)
     .catch(console.log)
   }
@@ -74,6 +82,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`,{
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         avatar,
       })
@@ -87,16 +96,23 @@ class Api {
 
   checkHelper(res) {
     if (res.ok) {
+      console.log('ok');
       return res.json()}
     else {
-      return Promise.reject(res.status)}
+      return Promise.reject(`Ошибка: ${res.status}`)};
+  }
+
+  updateToken(token) {
+    this._headers['Authorization'] = `Bearer ${token}`;
   }
 }
 
+const token = localStorage.getItem('jwt');
+
 export const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-52',
+  baseUrl: "https://api.mesto.students.nomoredomains.work/",
   headers: {
-    authorization: '1a9c818d-8c80-4566-ac65-ebfe34375ff2',
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
 });
