@@ -12,3 +12,15 @@
 .header__link:hover:not(.header__email) {
   opacity: 0.6;
 }
+@media screen and (max-width: 400px) {
+  .header__link {
+    font-size: 14px;
+    margin: 0 0 0 10px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .header__link {
+    margin-right: 27px;
+  }
+}
